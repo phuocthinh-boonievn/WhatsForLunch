@@ -1,0 +1,43 @@
+{
+  "expo": {
+    "name": "Trưa nay ăn gì?",
+    "slug": "whats-for-lunch",
+    "scheme": "truanayangi",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#27323b"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.truanayangi.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#27323b",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "com.truanayangi.app"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "backgroundColor": "#27323b"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-audio",
+      "expo-image"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
