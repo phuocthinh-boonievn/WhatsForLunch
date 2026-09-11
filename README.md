@@ -1,6 +1,6 @@
 # WhatsForLunch
 
-Expo clone of [Trưa nay ăn gì?](https://nagisanzenin.github.io/truanayangi/) — a single-screen CS:GO-style Vietnamese lunch case opener.
+Expo clone of [Trưa nay ăn gì?](https://truanayangi.com/) — a single-screen CS:GO-style Vietnamese lunch case opener.
 
 **Stack:** Expo SDK 57 · React Native 0.86 · Expo Router · TypeScript.
 
@@ -33,7 +33,7 @@ Then:
 
 Food art and CS:GO crate SFX are loaded from the original site:
 
-`https://nagisanzenin.github.io/truanayangi/`
+`https://truanayangi.com/`
 
 ## Tests
 

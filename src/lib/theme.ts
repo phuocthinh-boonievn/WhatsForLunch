@@ -1,4 +1,4 @@
-export const ASSET_BASE = 'https://nagisanzenin.github.io/truanayangi';
+export const ASSET_BASE = 'https://truanayangi.com';
 export const COUNTER_API =
   'https://truanayangi-counter.nagisanzenin.workers.dev/spins';
 
