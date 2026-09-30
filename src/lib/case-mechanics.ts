@@ -55,11 +55,61 @@ export function createFoodSelector<T extends PricedMeal>(population:T[],target=T
 }
 export function stopFraction(random=Math.random){return (Math.floor(random()*81)+10)/100}
 
-export function priceRarity(priceInThousands:number){return priceInThousands<=40?0:priceInThousands<=65?1:priceInThousands<=100?2:priceInThousands<=130?3:4}
+export type MealKind = 'food' | 'drink' | 'snack' | 'nhau';
+
+// Live site (kind-budget-v2): a price falls in the first band it does not exceed.
+// Food gold (tier 4) now starts above 150k, not 130k.
+export const RARITY_BANDS: Record<MealKind, readonly number[]> = {
+ food: [40, 65, 100, 150],
+ drink: [20, 30, 35, 45],
+ snack: [20, 30, 45, 60],
+ nhau: [50, 80, 120, 150],
+};
+
+export function priceRarity(priceInThousands: number, kind: MealKind = 'food') {
+ const bands = RARITY_BANDS[kind];
+ const index = bands.findIndex((band) => priceInThousands <= band);
+ return index < 0 ? 4 : index;
+}
+
+// Slot keys are stable ids. The number on the chip is BUDGET_TARGETS[kind][index],
+// not the key. "unlimited" still fits a finite mean (the top of that kind's table).
+export const BUDGET_SLOTS = ['30', '50', '100', '150', 'unlimited'] as const;
+export type BudgetSlot = (typeof BUDGET_SLOTS)[number];
+
+export const BUDGET_TARGETS: Record<MealKind, readonly number[]> = {
+ food: [30, 50, 80, 120, 180],
+ drink: [20, 25, 35, 45, 50],
+ snack: [15, 25, 35, 50, 65],
+ nhau: [35, 60, 90, 120, 150],
+};
+
+export function budgetTargetFor(kind: MealKind, slot: BudgetSlot) {
+ const index = BUDGET_SLOTS.indexOf(slot);
+ if (index < 0) throw new Error('Unknown budget slot');
+ return BUDGET_TARGETS[kind][index];
+}
+
+export function budgetLabel(kind: MealKind, slot: BudgetSlot) {
+ const index = BUDGET_SLOTS.indexOf(slot);
+ const target = budgetTargetFor(kind, slot);
+ if (index === 0) return `Hết tiền rồi · ${target}k`;
+ if (index === 4) return `Mới nhận lương · ${target}k`;
+ return `${target}k`;
+}
+
+export function clampTarget(prices: readonly number[], target: number) {
+ if (!prices.length) throw new Error('No meals in population');
+ const min = Math.min(...prices);
+ const max = Math.max(...prices);
+ return Math.max(min, Math.min(target, max));
+}
 
 // Cosmetic motion is independent of reward selection. Every profile is monotonic
 // and finishes at zero velocity; vary travel, duration and drag between rolls.
-export function createSpinProfile(random = Math.random) {
+// Reduced motion matches upstream: a shorter reel, not an instant cut.
+export function createSpinProfile(random = Math.random, reducedMotion = false) {
+ if (reducedMotion) return {durationMs:4000+Math.floor(random()*1001),tiles:10+Math.floor(random()*4),friction:2.7+random()*.6};
  return {durationMs:7500+Math.floor(random()*2001),tiles:30+Math.floor(random()*11),friction:2.7+random()*.6};
 }
 export function spinProgress(progress:number,friction:number) {
