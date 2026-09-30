@@ -10,7 +10,7 @@ export default function RootLayout() {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <Head>
           <title>Trưa nay ăn gì?</title>
-          <meta name="description" content="Mở hòm CS:GO, nhận món ăn trưa." />
+          <meta name="description" content="Mở hòm CS:GO, quay món chính, đồ uống, ăn vặt hoặc món nhậu theo ngân sách." />
         </Head>
         <StatusBar style="light" />
         <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#27323b' } }} />

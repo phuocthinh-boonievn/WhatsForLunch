@@ -1,6 +1,11 @@
-export const ASSET_BASE = 'https://nagisanzenin.github.io/truanayangi';
-export const COUNTER_API =
-  'https://truanayangi-counter.nagisanzenin.workers.dev/spins';
+export const ASSET_BASE = 'https://truanayangi.com';
+/** Production counter first. The workers.dev counter still answers if the tunnel is down. */
+export const COUNTER_ENDPOINTS = [
+  'https://truanayangi.com/api/spins',
+  'https://truanayangi-counter.nagisanzenin.workers.dev/spins',
+] as const;
+export const COUNTER_API = COUNTER_ENDPOINTS[0];
+export const WAREHOUSE_ART = `${ASSET_BASE}/optimized/warehouse-desktop-150a589e9e45.webp`;
 
 export const colors = {
   warehouse: '#27323b',
@@ -38,10 +43,11 @@ export const tiers = [
   '★ ĐẶC BIỆT',
 ] as const;
 
-export const BUDGET_PRESETS = ['35', '50', '75', '100', '150'] as const;
 export const DEFAULT_BUDGET = '50';
-export const MIN_BUDGET = 30;
-export const MAX_BUDGET = 180;
+
+export function formatDong(thousands: number) {
+  return `${new Intl.NumberFormat('vi-VN').format(Math.round(thousands * 1000))}đ`;
+}
 
 export const TILE_WIDTH = 240;
 export const TILE_HEIGHT = 180;

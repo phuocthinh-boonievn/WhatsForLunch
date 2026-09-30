@@ -1,20 +1,17 @@
 import { useState } from 'react';
-import {
-  Modal,
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
-import { BUDGET_PRESETS, colors } from '../lib/theme';
+import { Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { colors } from '../lib/theme';
+
+export type BudgetOption = { value: string; label: string };
 
 type Props = {
   budget: string;
   custom: string;
+  options: readonly BudgetOption[];
   disabled?: boolean;
   valid: boolean;
-  vegNote?: string | null;
+  note?: string | null;
+  error?: string | null;
   onBudget: (value: string) => void;
   onCustom: (value: string) => void;
 };
@@ -22,22 +19,25 @@ type Props = {
 export function BudgetPicker({
   budget,
   custom,
+  options,
   disabled,
   valid,
-  vegNote,
+  note,
+  error,
   onBudget,
   onCustom,
 }: Props) {
   const [open, setOpen] = useState(false);
-  const label = budget === 'custom' ? 'Tuỳ chỉnh' : `${budget}.000đ`;
+  const selected = options.find((option) => option.value === budget);
+  const label = budget === 'custom' ? 'Tuỳ chỉnh' : (selected?.label ?? budget);
 
   return (
     <View style={styles.wrap}>
       <Text nativeID="budget-label" style={styles.label}>
-        Mức chi thường ngày
+        Ngân sách bữa ăn
       </Text>
       <Pressable
-        accessibilityLabel="Mức chi thường ngày"
+        accessibilityLabel="Ngân sách bữa ăn"
         accessibilityRole="button"
         disabled={disabled}
         onPress={() => setOpen(true)}
@@ -60,27 +60,27 @@ export function BudgetPicker({
           <Text style={styles.unit}>nghìn / bữa</Text>
         </View>
       ) : null}
-      {!valid ? (
+      {!valid && error ? (
         <Text accessibilityRole="alert" style={styles.note}>
-          Nhập từ 30 đến 180 nghìn.
+          {error}
         </Text>
-      ) : vegNote ? (
-        <Text style={styles.note}>{vegNote}</Text>
+      ) : note ? (
+        <Text style={styles.note}>{note}</Text>
       ) : null}
 
       <Modal visible={open} transparent animationType="fade" onRequestClose={() => setOpen(false)}>
         <Pressable style={styles.backdrop} onPress={() => setOpen(false)}>
           <View style={styles.menu}>
-            {BUDGET_PRESETS.map((value) => (
+            {options.map((option) => (
               <Pressable
-                key={value}
+                key={option.value}
                 onPress={() => {
-                  onBudget(value);
+                  onBudget(option.value);
                   setOpen(false);
                 }}
                 style={styles.option}
               >
-                <Text style={styles.optionText}>{value}.000đ</Text>
+                <Text style={styles.optionText}>{option.label}</Text>
               </Pressable>
             ))}
             <Pressable
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     color: '#c2cbd2',
     fontSize: 12,
-    maxWidth: 235,
+    maxWidth: 280,
   },
   backdrop: {
     flex: 1,

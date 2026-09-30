@@ -2,7 +2,7 @@ import { Image } from 'expo-image';
 import { memo, useCallback, useState } from 'react';
 import { LayoutChangeEvent, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import type { Food } from '../lib/foods';
-import { spriteFor } from '../lib/sprite';
+import { artUri, spriteFor } from '../lib/sprite';
 import { colors } from '../lib/theme';
 
 type Props = {
@@ -11,6 +11,7 @@ type Props = {
 };
 
 function FoodImageInner({ food, style }: Props) {
+  const art = artUri(food.image);
   const sprite = spriteFor(food.image);
   const [box, setBox] = useState({ w: 0, h: 0 });
   const onLayout = useCallback((event: LayoutChangeEvent) => {
@@ -18,7 +19,7 @@ function FoodImageInner({ food, style }: Props) {
     setBox((prev) => (prev.w === width && prev.h === height ? prev : { w: width, h: height }));
   }, []);
 
-  const cellH = sprite.lunch && box.h ? box.h / 0.93 : box.h;
+  const cellH = sprite.clipBottom > 0 && box.h ? box.h / (1 - sprite.clipBottom) : box.h;
 
   return (
     <View
@@ -27,7 +28,14 @@ function FoodImageInner({ food, style }: Props) {
       onLayout={onLayout}
       style={[styles.clip, style]}
     >
-      {box.w > 0 && box.h > 0 ? (
+      {art ? (
+        <Image
+          source={{ uri: art }}
+          cachePolicy="disk"
+          contentFit="cover"
+          style={StyleSheet.absoluteFill}
+        />
+      ) : box.w > 0 && box.h > 0 ? (
         <Image
           source={{ uri: sprite.uri }}
           cachePolicy="disk"
